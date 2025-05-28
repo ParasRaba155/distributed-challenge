@@ -1,20 +1,22 @@
-package main
+package message
 
 import (
 	"encoding/json"
 	"fmt"
 )
 
-type Message_Type int
+type Type int
 
 const (
-	INVALID Message_Type = iota - 1
-	INIT    Message_Type = iota
+	INVALID Type = iota - 1
+	INIT    Type = iota
 	ECHO
 	ECHO_OK
+	GENERATE
+	GENERATE_OK
 )
 
-func (m Message_Type) String() string {
+func (m Type) String() string {
 	switch m {
 	case INIT:
 		return "init"
@@ -22,12 +24,16 @@ func (m Message_Type) String() string {
 		return "echo"
 	case ECHO_OK:
 		return "echo_ok"
+	case GENERATE:
+		return "generate"
+	case GENERATE_OK:
+		return "generate_ok"
 	default:
 		return fmt.Sprintf("invalid(%d)", m)
 	}
 }
 
-func MessageTypeFromString(input string) Message_Type {
+func MessageTypeFromString(input string) Type {
 	switch input {
 	case "init":
 		return INIT
@@ -35,16 +41,20 @@ func MessageTypeFromString(input string) Message_Type {
 		return ECHO
 	case "echo_ok":
 		return ECHO_OK
+	case "generate":
+		return GENERATE
+	case "generate_ok":
+		return GENERATE_OK
 	default:
 		return INVALID
 	}
 }
 
-func (m Message_Type) MarshalJSON() ([]byte, error) {
+func (m Type) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m.String())
 }
 
-func (m *Message_Type) UnmarshalJSON(data []byte) error {
+func (m *Type) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
