@@ -38,12 +38,12 @@ formatters:
       # with the given prefixes are grouped after 3rd-party packages.
       # Default: []
       local-prefixes:
-        - github.com/my/project
+        - fly.io/distributed-challenge 
 
     golines:
       # Target maximum line length.
       # Default: 100
-      max-len: 120
+      max-len: 100
 
 linters:
   enable:
@@ -394,7 +394,6 @@ linters:
       # Example (to disable some checks): [ "all", "-SA1000", "-SA1001"]
       # Default: ["all", "-ST1000", "-ST1003", "-ST1016", "-ST1020", "-ST1021", "-ST1022"]
       checks:
-        - all
         # Incorrect or missing package comment.
         # https://staticcheck.dev/docs/checks/#ST1000
         - -ST1000
@@ -409,6 +408,17 @@ linters:
       # Enable/disable `os.TempDir()` detections.
       # Default: false
       os-temp-dir: true
+
+    revive:
+      rules:
+       - name: var-naming
+         disabled: true
+
+    recvcheck:
+      disable-builtin: true
+      exclusions:
+        - "*.MarshalJSON"
+        - "*.UnmarshalJSON"
 
   exclusions:
     # Log a warning if an exclusion rule is unused.

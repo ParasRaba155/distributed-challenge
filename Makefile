@@ -8,6 +8,9 @@ serve:
 fmt:
 	go fmt ./...
 
+lint:
+	golangci-lint run ./...
+
 build-echo:
 	go build -o bin/echo cmd/echo/*.go
 

@@ -44,14 +44,17 @@ type randV2Reader struct {
 }
 
 func (r *randV2Reader) Read(p []byte) (int, error) {
+	const byteLength = 256
 	for i := range p {
-		p[i] = byte(r.rng.IntN(256))
+		p[i] = byte(r.rng.IntN(byteLength))
 	}
 	return len(p), nil
 }
 
 func generateULID() (ulid.ULID, error) {
+	//nolint:gosec // reason: int64 of time is always positive and will be < uint64 max
 	seed := uint64(time.Now().UnixNano())
+	//nolint:gosec // reason: acceptable for ULID generation
 	rng := rand.New(rand.NewPCG(seed, seed+1))
 	entropy := &randV2Reader{rng}
 	ms := ulid.Timestamp(time.Now())
