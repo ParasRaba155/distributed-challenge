@@ -1,4 +1,4 @@
-MAELSTROM := /home/paras/maelstrom/maelstrom
+MAELSTROM := ~/maelstrom/maelstrom
 ECHO_BINARY := ./bin/echo
 GENERATE_BINARY := ./bin/generate
 
