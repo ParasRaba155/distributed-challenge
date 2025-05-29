@@ -5,7 +5,7 @@ package generate
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"time"
 
 	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
@@ -39,6 +39,25 @@ type generateHandler struct {
 	node *maelstrom.Node
 }
 
+type randV2Reader struct {
+	rng *rand.Rand
+}
+
+func (r *randV2Reader) Read(p []byte) (int, error) {
+	for i := range p {
+		p[i] = byte(r.rng.IntN(256))
+	}
+	return len(p), nil
+}
+
+func generateULID() (ulid.ULID, error) {
+	seed := uint64(time.Now().UnixNano())
+	rng := rand.New(rand.NewPCG(seed, seed+1))
+	entropy := &randV2Reader{rng}
+	ms := ulid.Timestamp(time.Now())
+	return ulid.New(ms, entropy)
+}
+
 func NewGenerateHanlder(node *maelstrom.Node) generateHandler {
 	if node == nil {
 		panic("nil node in NewGenerateHanlder")
@@ -54,9 +73,7 @@ func (gh generateHandler) Handle(req maelstrom.Message) error {
 	if generateReq.Type != message.GENERATE {
 		return fmt.Errorf("Handle: illegal body: %+v", generateReq)
 	}
-	entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
-	ms := ulid.Timestamp(time.Now())
-	guid, err := ulid.New(ms, entropy)
+	guid, err := generateULID()
 	if err != nil {
 		return fmt.Errorf("Handle: generate guid: %w", err)
 	}

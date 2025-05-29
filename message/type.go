@@ -28,12 +28,14 @@ func (m Type) String() string {
 		return "generate"
 	case GENERATE_OK:
 		return "generate_ok"
+	case INVALID:
+		return "invalid"
 	default:
 		return fmt.Sprintf("invalid(%d)", m)
 	}
 }
 
-func MessageTypeFromString(input string) Type {
+func TypeFromString(input string) Type {
 	switch input {
 	case "init":
 		return INIT
@@ -59,7 +61,7 @@ func (m *Type) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
 	}
-	*m = MessageTypeFromString(s)
+	*m = TypeFromString(s)
 	if *m == INVALID {
 		return fmt.Errorf("received message type: %q with body: %v", s, data)
 	}
