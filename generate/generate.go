@@ -14,24 +14,23 @@ import (
 	"fly.io/distributed-challenge/message"
 )
 
-type response struct {
-	Type      message.Type `json:"type"`
-	MsgID     int          `json:"msg_id"`
-	InReplyTo int          `json:"in_reply_to"`
-	GUID      string       `json:"id"`
+type generateResponse struct {
+	message.BaseResponse
+	GUID string `json:"id"`
 }
 
-type request struct {
-	Type  message.Type `json:"type"`
-	MsgID int          `json:"msg_id"`
+type generateRequest struct {
+	message.BaseRequest
 }
 
-func newResponse(req request, guid string) response {
-	return response{
-		Type:      message.GENERATE_OK,
-		MsgID:     req.MsgID,
-		InReplyTo: req.MsgID,
-		GUID:      guid,
+func newResponse(req generateRequest, guid string) generateResponse {
+	return generateResponse{
+		BaseResponse: message.BaseResponse{
+			Type:      message.GENERATE_OK,
+			MsgID:     req.MsgID,
+			InReplyTo: req.MsgID,
+		},
+		GUID: guid,
 	}
 }
 
@@ -69,7 +68,7 @@ func NewGenerateHanlder(node *maelstrom.Node) generateHandler {
 }
 
 func (gh generateHandler) Handle(req maelstrom.Message) error {
-	var generateReq request
+	var generateReq generateRequest
 	if err := json.Unmarshal(req.Body, &generateReq); err != nil {
 		return fmt.Errorf("Handle: read request: %w", err)
 	}

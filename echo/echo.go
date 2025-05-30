@@ -11,25 +11,24 @@ import (
 	"fly.io/distributed-challenge/message"
 )
 
-type response struct {
-	Type      message.Type `json:"type"`
-	MsgID     int          `json:"msg_id"`
-	InReplyTo int          `json:"in_reply_to"`
-	Echo      string       `json:"echo"`
+type echoResponse struct {
+	message.BaseResponse
+	Echo string `json:"echo"`
 }
 
-type request struct {
-	Type  message.Type `json:"type"`
-	MsgID int          `json:"msg_id"`
-	Echo  string       `json:"echo"`
+type echoRequest struct {
+	message.BaseRequest
+	Echo string `json:"echo"`
 }
 
-func newResponse(req request) response {
-	return response{
-		Type:      message.ECHO_OK,
-		MsgID:     req.MsgID,
-		InReplyTo: req.MsgID,
-		Echo:      req.Echo,
+func newResponse(req echoRequest) echoResponse {
+	return echoResponse{
+		BaseResponse: message.BaseResponse{
+			Type:      message.ECHO_OK,
+			MsgID:     req.MsgID,
+			InReplyTo: req.MsgID,
+		},
+		Echo: req.Echo,
 	}
 }
 
@@ -45,7 +44,7 @@ func NewEchoHandler(node *maelstrom.Node) echoHandler {
 }
 
 func (e echoHandler) Handle(req maelstrom.Message) error {
-	var echoReq request
+	var echoReq echoRequest
 	if err := json.Unmarshal(req.Body, &echoReq); err != nil {
 		return fmt.Errorf("Handle: read request: %w", err)
 	}
