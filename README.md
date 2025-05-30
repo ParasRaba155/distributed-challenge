@@ -5,6 +5,7 @@
 - Currently implemented challenges are
     - 1. [Echo](https://fly.io/dist-sys/1/)
     - 2. [Unique ID Generation](https://fly.io/dist-sys/2/)
+    - 3. [Broadcast](https://fly.io/dist-sys/3a/)
 - Code Structure
 ```bash
 ├── bin
