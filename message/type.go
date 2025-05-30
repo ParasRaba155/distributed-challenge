@@ -14,6 +14,12 @@ const (
 	ECHO_OK
 	GENERATE
 	GENERATE_OK
+	BROADCAST
+	BROADCAST_OK
+	READ
+	READ_OK
+	TOPOLOGY
+	TOPOLOGY_OK
 )
 
 func (m Type) String() string {
@@ -28,6 +34,18 @@ func (m Type) String() string {
 		return "generate"
 	case GENERATE_OK:
 		return "generate_ok"
+	case BROADCAST:
+		return "broadcast"
+	case BROADCAST_OK:
+		return "broadcast_ok"
+	case READ:
+		return "read"
+	case READ_OK:
+		return "read_ok"
+	case TOPOLOGY:
+		return "topology"
+	case TOPOLOGY_OK:
+		return "topology_ok"
 	case INVALID:
 		return "invalid"
 	default:
@@ -47,6 +65,18 @@ func TypeFromString(input string) Type {
 		return GENERATE
 	case "generate_ok":
 		return GENERATE_OK
+	case "broadcast":
+		return BROADCAST
+	case "broadcast_ok":
+		return BROADCAST_OK
+	case "read":
+		return READ
+	case "read_ok":
+		return READ_OK
+	case "topology":
+		return TOPOLOGY
+	case "topology_ok":
+		return TOPOLOGY_OK
 	default:
 		return INVALID
 	}

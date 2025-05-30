@@ -1,6 +1,7 @@
 MAELSTROM := ~/maelstrom/maelstrom
 ECHO_BINARY := ./bin/echo
 GENERATE_BINARY := ./bin/generate
+BROADCAST_BINARY := ./bin/broadcast
 
 serve:
 	$(MAELSTROM) serve
@@ -22,3 +23,9 @@ build-generate:
 
 test-generate:build-generate
 	$(MAELSTROM) test -w unique-ids --bin $(GENERATE_BINARY) --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition
+
+build-broadcast:
+	go build -o bin/broadcast cmd/broadcast/*.go
+
+test-broadcast:build-broadcast
+	$(MAELSTROM) test -w broadcast --bin $(BROADCAST_BINARY) --node-count 1 --time-limit 20 --rate 10 
