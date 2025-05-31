@@ -20,6 +20,8 @@ const (
 	READ_OK
 	TOPOLOGY
 	TOPOLOGY_OK
+	ADD
+	ADD_OK
 )
 
 func (m Type) String() string {
@@ -46,6 +48,10 @@ func (m Type) String() string {
 		return "topology"
 	case TOPOLOGY_OK:
 		return "topology_ok"
+	case ADD:
+		return "add"
+	case ADD_OK:
+		return "add_ok"
 	case INVALID:
 		return "invalid"
 	default:
@@ -77,6 +83,10 @@ func TypeFromString(input string) Type {
 		return TOPOLOGY
 	case "topology_ok":
 		return TOPOLOGY_OK
+	case "add":
+		return ADD
+	case "add_ok":
+		return ADD_OK
 	default:
 		return INVALID
 	}

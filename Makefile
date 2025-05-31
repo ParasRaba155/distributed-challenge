@@ -2,6 +2,7 @@ MAELSTROM := ~/maelstrom/maelstrom
 ECHO_BINARY := ./bin/echo
 GENERATE_BINARY := ./bin/generate
 BROADCAST_BINARY := ./bin/broadcast
+COUNTER_BINARY := ./bin/counter
 
 serve:
 	$(MAELSTROM) serve
@@ -29,3 +30,9 @@ build-broadcast:
 
 test-broadcast:build-broadcast
 	$(MAELSTROM) test -w broadcast --bin $(BROADCAST_BINARY) --node-count 1 --time-limit 20 --rate 10 
+
+build-counter:
+	go build -o bin/counter cmd/counter/*.go
+
+test-counter:build-counter
+	$(MAELSTROM) test -w g-counter --bin $(COUNTER_BINARY) --node-count 3 --rate 100 --time-limit 20 --nemesis partition

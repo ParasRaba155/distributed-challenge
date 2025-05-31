@@ -6,6 +6,7 @@
     - 1. [Echo](https://fly.io/dist-sys/1/)
     - 2. [Unique ID Generation](https://fly.io/dist-sys/2/)
     - 3. [Broadcast](https://fly.io/dist-sys/3a/)
+    - 4. [Grow-Only Counter](https://fly.io/dist-sys/4/)
 - Code Structure
 ```bash
 ├── bin
