@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Rican7/retry"
+	"github.com/Rican7/retry/backoff"
+	"github.com/Rican7/retry/strategy"
 	maelstrom "github.com/jepsen-io/maelstrom/demo/go"
 )
 
@@ -16,6 +19,8 @@ const (
 	counterKey        = "counter"
 	createIfNotExists = true
 	defaultTimeout    = 5 // 5 second
+	defaultRetryLimit = 5
+	defaultRetryAfter = 5 // 5 Millisecond
 )
 
 type counterHandler struct {
@@ -54,20 +59,12 @@ func (ch counterHandler) Handle(req maelstrom.Message) error {
 	if !exists {
 		return ch.kvStore.Write(ctx, counterKey, addReq.Delta)
 	}
-	// FIXME: The current implementatoin will result in RPCError(PreconditionFailed, \"current value 944 is not 937\")"
-	// For some nodes due to contention of nodes trying to increment the counter simultaneously
-	// We should add a retry loop
-	// NOTE: This is not fine as sometime it results in failure of tests
-	err = ch.kvStore.CompareAndSwap(
-		ctx,
-		counterKey,
-		value,
-		value+addReq.Delta,
-		createIfNotExists,
-	)
+
+	err = ch.compareAndSwapWithRetry(ctx, value, addReq.Delta)
 	if err != nil {
 		return fmt.Errorf("counter Handle Add: update counter:  %w", err)
 	}
+
 	return ch.node.Send(req.Src, addResponseFromReq(addReq))
 }
 
@@ -82,6 +79,7 @@ func (ch counterHandler) HandleRead(req maelstrom.Message) error {
 	}
 	ctx, cancel := ctxWithTimeout()
 	defer cancel()
+
 	value, exists, err := ch.currentCounter(ctx)
 	if err != nil {
 		return fmt.Errorf("counter Handle Read: check for counter exists: %w", err)
@@ -89,6 +87,7 @@ func (ch counterHandler) HandleRead(req maelstrom.Message) error {
 	if !exists {
 		return maelstrom.NewRPCError(maelstrom.KeyDoesNotExist, "key does not exists")
 	}
+
 	return ch.node.Send(req.Src, readResponseFromReq(readReq, value))
 }
 
@@ -101,14 +100,27 @@ func (ch counterHandler) currentCounter(ctx context.Context) (value int, exists 
 	if err == nil {
 		return val, true, nil
 	}
+
 	var rpcError *maelstrom.RPCError
 	if !errors.As(err, &rpcError) {
 		return 0, false, fmt.Errorf("did not get RPCError: %w", err)
 	}
+
 	if rpcError.Code == maelstrom.KeyDoesNotExist {
 		return 0, false, nil
 	}
+
 	return 0, false, rpcError
+}
+
+func (ch counterHandler) compareAndSwapWithRetry(ctx context.Context, value, delta int) error {
+	action := func(_ uint) error {
+		return ch.kvStore.CompareAndSwap(ctx, counterKey, value, value+delta, createIfNotExists)
+	}
+	return retry.Retry(
+		action, strategy.Limit(defaultRetryLimit),
+		strategy.Backoff(backoff.BinaryExponential((defaultRetryAfter * time.Millisecond))),
+	)
 }
 
 func ctxWithTimeout() (context.Context, context.CancelFunc) {
