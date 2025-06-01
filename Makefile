@@ -3,6 +3,7 @@ ECHO_BINARY := ./bin/echo
 GENERATE_BINARY := ./bin/generate
 BROADCAST_BINARY := ./bin/broadcast
 COUNTER_BINARY := ./bin/counter
+KAFKA_BINARY := ./bin/kafka
 
 serve:
 	$(MAELSTROM) serve
@@ -36,3 +37,9 @@ build-counter:
 
 test-counter:build-counter
 	$(MAELSTROM) test -w g-counter --bin $(COUNTER_BINARY) --node-count 3 --rate 100 --time-limit 20 --nemesis partition
+
+build-kafka:
+	go build -o bin/kafka cmd/kafka/*.go
+
+test-kafka:build-kafka
+	$(MAELSTROM) test -w kafka --bin $(KAFKA_BINARY) --node-count 1 --concurrency 2n --time-limit 20 --rate 100

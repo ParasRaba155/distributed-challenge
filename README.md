@@ -7,6 +7,7 @@
     - 2. [Unique ID Generation](https://fly.io/dist-sys/2/)
     - 3. [Broadcast](https://fly.io/dist-sys/3a/)
     - 4. [Grow-Only Counter](https://fly.io/dist-sys/4/)
+    - 4. [Single-Node Kafka-Style Log](https://fly.io/dist-sys/5a/)
 - Code Structure
 ```bash
 ├── bin
@@ -35,3 +36,5 @@
 ```bash
 make test-<challenge-name>
 ```
+
+## NOTE: In testing [challenge 5: kafka style logs](https://fly.io/dist-sys/5a/) the rate given in docs is 1000, however I kept getting `java.lang.OutOfMemoryError: Java heap space` so I reduced it to 100 One can increase it for their own

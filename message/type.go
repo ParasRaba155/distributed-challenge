@@ -1,3 +1,4 @@
+//nolint:cyclop // there are lots of switch case on message type, which increases complexity
 package message
 
 import (
@@ -22,6 +23,14 @@ const (
 	TOPOLOGY_OK
 	ADD
 	ADD_OK
+	SEND
+	SEND_OK
+	POLL
+	POLL_OK
+	COMMIT_OFFSETS
+	COMMIT_OFFSETS_OK
+	LIST_COMMITTED_OFFSETS
+	LIST_COMMITTED_OFFSETS_OK
 )
 
 func (m Type) String() string {
@@ -52,6 +61,22 @@ func (m Type) String() string {
 		return "add"
 	case ADD_OK:
 		return "add_ok"
+	case SEND:
+		return "send"
+	case SEND_OK:
+		return "send_ok"
+	case POLL:
+		return "poll"
+	case POLL_OK:
+		return "poll_ok"
+	case COMMIT_OFFSETS:
+		return "commit_offsets"
+	case COMMIT_OFFSETS_OK:
+		return "commit_offsets_ok"
+	case LIST_COMMITTED_OFFSETS:
+		return "list_committed_offsets"
+	case LIST_COMMITTED_OFFSETS_OK:
+		return "list_committed_offsets_ok"
 	case INVALID:
 		return "invalid"
 	default:
@@ -87,6 +112,22 @@ func TypeFromString(input string) Type {
 		return ADD
 	case "add_ok":
 		return ADD_OK
+	case "send":
+		return SEND
+	case "send_ok":
+		return SEND_OK
+	case "poll":
+		return POLL
+	case "poll_ok":
+		return POLL_OK
+	case "commit_offsets":
+		return COMMIT_OFFSETS
+	case "commit_offsets_ok":
+		return COMMIT_OFFSETS_OK
+	case "list_committed_offsets":
+		return LIST_COMMITTED_OFFSETS
+	case "list_committed_offsets_ok":
+		return LIST_COMMITTED_OFFSETS_OK
 	default:
 		return INVALID
 	}
