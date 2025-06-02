@@ -4,6 +4,7 @@ GENERATE_BINARY := ./bin/generate
 BROADCAST_BINARY := ./bin/broadcast
 COUNTER_BINARY := ./bin/counter
 KAFKA_BINARY := ./bin/kafka
+TXN_BINARY := ./bin/txn
 
 serve:
 	$(MAELSTROM) serve
@@ -43,3 +44,9 @@ build-kafka:
 
 test-kafka:build-kafka
 	$(MAELSTROM) test -w kafka --bin $(KAFKA_BINARY) --node-count 1 --concurrency 2n --time-limit 20 --rate 100
+
+build-txn:
+	go build -o bin/txn cmd/txn/*.go
+
+test-txn:build-txn
+	$(MAELSTROM) test -w txn-rw-register --bin $(TXN_BINARY) --node-count 1 --time-limit 20 --rate 1000 --concurrency 2n --consistency-models read-uncommitted --availability total

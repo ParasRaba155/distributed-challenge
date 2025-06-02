@@ -31,8 +31,11 @@ const (
 	COMMIT_OFFSETS_OK
 	LIST_COMMITTED_OFFSETS
 	LIST_COMMITTED_OFFSETS_OK
+	TXN
+	TXN_OK
 )
 
+//nolint:funlen // there are lots of switch case on message type
 func (m Type) String() string {
 	switch m {
 	case INIT:
@@ -77,6 +80,10 @@ func (m Type) String() string {
 		return "list_committed_offsets"
 	case LIST_COMMITTED_OFFSETS_OK:
 		return "list_committed_offsets_ok"
+	case TXN:
+		return "txn"
+	case TXN_OK:
+		return "txn_ok"
 	case INVALID:
 		return "invalid"
 	default:
@@ -128,6 +135,10 @@ func TypeFromString(input string) Type {
 		return LIST_COMMITTED_OFFSETS
 	case "list_committed_offsets_ok":
 		return LIST_COMMITTED_OFFSETS_OK
+	case "txn":
+		return TXN
+	case "txn_ok":
+		return TXN_OK
 	default:
 		return INVALID
 	}

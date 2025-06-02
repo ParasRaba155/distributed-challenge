@@ -7,7 +7,8 @@
     - 2. [Unique ID Generation](https://fly.io/dist-sys/2/)
     - 3. [Broadcast](https://fly.io/dist-sys/3a/)
     - 4. [Grow-Only Counter](https://fly.io/dist-sys/4/)
-    - 4. [Single-Node Kafka-Style Log](https://fly.io/dist-sys/5a/)
+    - 5. [Single-Node Kafka-Style Log](https://fly.io/dist-sys/5a/)
+    - 6. [Single-Node, Totally-Available Transactions](https://fly.io/dist-sys/6a/)
 - Code Structure
 ```bash
 ├── bin
